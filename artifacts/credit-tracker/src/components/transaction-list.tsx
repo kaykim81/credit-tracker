@@ -86,7 +86,7 @@ export function TransactionList({ transactions, personId }: TransactionListProps
                   <Button
                     variant="ghost"
                     size="icon"
-                    className="opacity-0 group-hover:opacity-100 text-muted-foreground hover:text-primary hover:bg-primary/10 transition-all focus:opacity-100"
+                    className="text-muted-foreground hover:text-primary hover:bg-primary/10 transition-all"
                     onClick={() => setEditingEntry(tx)}
                   >
                     <Pencil className="w-4 h-4" />
@@ -96,7 +96,7 @@ export function TransactionList({ transactions, personId }: TransactionListProps
                   <Button
                     variant="ghost"
                     size="icon"
-                    className="opacity-0 group-hover:opacity-100 text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-all focus:opacity-100"
+                    className="text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-all"
                     onClick={() => deleteCredit({ creditId: tx.id })}
                     disabled={isDeleting}
                   >
