@@ -1,0 +1,8 @@
+packages:
+  "framer-motion": "For premium page transitions and list animations"
+  "date-fns": "For beautiful date formatting"
+  "react-hook-form": "For robust form state management"
+  "@hookform/resolvers": "For integrating Zod with forms"
+  "zod": "For strict form validation"
+  "clsx": "For conditional tailwind classes"
+  "tailwind-merge": "For merging tailwind classes safely"

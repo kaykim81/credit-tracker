@@ -1,15 +1,18 @@
 openapi: 3.1.0
 info:
-  # Do not change the title, if the title changes, the import paths will be broken
   title: Api
   version: 0.1.0
-  description: API specification
+  description: Credit Score Tracker API
 servers:
   - url: /api
     description: Base API path
 tags:
   - name: health
     description: Health operations
+  - name: persons
+    description: Person operations
+  - name: credits
+    description: Credit entry operations
 paths:
   /healthz:
     get:
@@ -24,6 +27,133 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/HealthStatus"
+
+  /persons:
+    get:
+      operationId: getPersons
+      tags: [persons]
+      summary: Get all persons
+      responses:
+        "200":
+          description: List of persons
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Person"
+    post:
+      operationId: createPerson
+      tags: [persons]
+      summary: Create a person
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreatePersonRequest"
+      responses:
+        "201":
+          description: Created person
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Person"
+
+  /persons/{personId}:
+    get:
+      operationId: getPerson
+      tags: [persons]
+      summary: Get a person by ID
+      parameters:
+        - name: personId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Person
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Person"
+        "404":
+          description: Person not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /persons/{personId}/credits:
+    get:
+      operationId: getCredits
+      tags: [credits]
+      summary: Get credit entries for a person
+      parameters:
+        - name: personId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: List of credit entries
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/CreditEntry"
+    post:
+      operationId: addCredit
+      tags: [credits]
+      summary: Add a credit entry for a person
+      parameters:
+        - name: personId
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AddCreditRequest"
+      responses:
+        "201":
+          description: Created credit entry
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CreditEntry"
+
+  /credits/{creditId}:
+    delete:
+      operationId: deleteCredit
+      tags: [credits]
+      summary: Delete a credit entry
+      parameters:
+        - name: creditId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Deleted credit entry
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CreditEntry"
+        "404":
+          description: Credit entry not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
 components:
   schemas:
     HealthStatus:
@@ -34,3 +164,76 @@ components:
       required:
         - status
 
+    Person:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        totalScore:
+          type: integer
+        createdAt:
+          type: string
+          format: date-time
+      required:
+        - id
+        - name
+        - totalScore
+        - createdAt
+
+    CreatePersonRequest:
+      type: object
+      properties:
+        name:
+          type: string
+      required:
+        - name
+
+    CreditEntry:
+      type: object
+      properties:
+        id:
+          type: integer
+        personId:
+          type: integer
+        amount:
+          type: integer
+        reason:
+          type: string
+        type:
+          type: string
+          enum: [earned, used]
+        createdAt:
+          type: string
+          format: date-time
+      required:
+        - id
+        - personId
+        - amount
+        - reason
+        - type
+        - createdAt
+
+    AddCreditRequest:
+      type: object
+      properties:
+        amount:
+          type: integer
+        reason:
+          type: string
+        type:
+          type: string
+          enum: [earned, used]
+      required:
+        - amount
+        - reason
+        - type
+
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          type: string
+      required:
+        - error
