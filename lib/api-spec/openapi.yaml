@@ -130,6 +130,35 @@ paths:
                 $ref: "#/components/schemas/CreditEntry"
 
   /credits/{creditId}:
+    patch:
+      operationId: updateCredit
+      tags: [credits]
+      summary: Update a credit entry
+      parameters:
+        - name: creditId
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateCreditRequest"
+      responses:
+        "200":
+          description: Updated credit entry
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CreditEntry"
+        "404":
+          description: Credit entry not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
     delete:
       operationId: deleteCredit
       tags: [credits]
@@ -229,6 +258,17 @@ components:
         - amount
         - reason
         - type
+
+    UpdateCreditRequest:
+      type: object
+      properties:
+        amount:
+          type: integer
+        reason:
+          type: string
+        type:
+          type: string
+          enum: [earned, used]
 
     ErrorResponse:
       type: object

@@ -14,3 +14,5 @@ export * from "./creditEntryType";
 export * from "./errorResponse";
 export * from "./healthStatus";
 export * from "./person";
+export * from "./updateCreditRequest";
+export * from "./updateCreditRequestType";

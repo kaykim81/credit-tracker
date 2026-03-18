@@ -78,6 +78,28 @@ export const AddCreditBody = zod.object({
 });
 
 /**
+ * @summary Update a credit entry
+ */
+export const UpdateCreditParams = zod.object({
+  creditId: zod.coerce.number(),
+});
+
+export const UpdateCreditBody = zod.object({
+  amount: zod.number().optional(),
+  reason: zod.string().optional(),
+  type: zod.enum(["earned", "used"]).optional(),
+});
+
+export const UpdateCreditResponse = zod.object({
+  id: zod.number(),
+  personId: zod.number(),
+  amount: zod.number(),
+  reason: zod.string(),
+  type: zod.enum(["earned", "used"]),
+  createdAt: zod.date(),
+});
+
+/**
  * @summary Delete a credit entry
  */
 export const DeleteCreditParams = zod.object({

@@ -6,6 +6,8 @@ import {
   AddCreditBody,
   GetCreditsParams,
   DeleteCreditParams,
+  UpdateCreditParams,
+  UpdateCreditBody,
 } from "@workspace/api-zod";
 
 const router: IRouter = Router();
@@ -56,6 +58,36 @@ router.post("/persons/:personId/credits", async (req, res) => {
     .returning();
 
   res.status(201).json({
+    id: entry.id,
+    personId: entry.personId,
+    amount: entry.amount,
+    reason: entry.reason,
+    type: entry.type,
+    createdAt: entry.createdAt.toISOString(),
+  });
+});
+
+router.patch("/credits/:creditId", async (req, res) => {
+  const { creditId } = UpdateCreditParams.parse(req.params);
+  const body = UpdateCreditBody.parse(req.body);
+
+  const updateData: Partial<{ amount: number; reason: string; type: "earned" | "used" }> = {};
+  if (body.amount !== undefined) updateData.amount = body.amount;
+  if (body.reason !== undefined) updateData.reason = body.reason;
+  if (body.type !== undefined) updateData.type = body.type;
+
+  const [entry] = await db
+    .update(creditEntriesTable)
+    .set(updateData)
+    .where(eq(creditEntriesTable.id, creditId))
+    .returning();
+
+  if (!entry) {
+    res.status(404).json({ error: "Credit entry not found" });
+    return;
+  }
+
+  res.json({
     id: entry.id,
     personId: entry.personId,
     amount: entry.amount,

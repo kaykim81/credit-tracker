@@ -23,6 +23,7 @@ import type {
   ErrorResponse,
   HealthStatus,
   Person,
+  UpdateCreditRequest,
 } from "./api.schemas";
 
 import { customFetch } from "../custom-fetch";
@@ -526,6 +527,93 @@ export const useAddCredit = <
   TContext
 > => {
   return useMutation(getAddCreditMutationOptions(options));
+};
+
+/**
+ * @summary Update a credit entry
+ */
+export const getUpdateCreditUrl = (creditId: number) => {
+  return `/api/credits/${creditId}`;
+};
+
+export const updateCredit = async (
+  creditId: number,
+  updateCreditRequest: UpdateCreditRequest,
+  options?: RequestInit,
+): Promise<CreditEntry> => {
+  return customFetch<CreditEntry>(getUpdateCreditUrl(creditId), {
+    ...options,
+    method: "PATCH",
+    headers: { "Content-Type": "application/json", ...options?.headers },
+    body: JSON.stringify(updateCreditRequest),
+  });
+};
+
+export const getUpdateCreditMutationOptions = <
+  TError = ErrorType<ErrorResponse>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof updateCredit>>,
+    TError,
+    { creditId: number; data: BodyType<UpdateCreditRequest> },
+    TContext
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof updateCredit>>,
+  TError,
+  { creditId: number; data: BodyType<UpdateCreditRequest> },
+  TContext
+> => {
+  const mutationKey = ["updateCredit"];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation &&
+      "mutationKey" in options.mutation &&
+      options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof updateCredit>>,
+    { creditId: number; data: BodyType<UpdateCreditRequest> }
+  > = (props) => {
+    const { creditId, data } = props ?? {};
+
+    return updateCredit(creditId, data, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type UpdateCreditMutationResult = NonNullable<
+  Awaited<ReturnType<typeof updateCredit>>
+>;
+export type UpdateCreditMutationBody = BodyType<UpdateCreditRequest>;
+export type UpdateCreditMutationError = ErrorType<ErrorResponse>;
+
+/**
+ * @summary Update a credit entry
+ */
+export const useUpdateCredit = <
+  TError = ErrorType<ErrorResponse>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof updateCredit>>,
+    TError,
+    { creditId: number; data: BodyType<UpdateCreditRequest> },
+    TContext
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseMutationResult<
+  Awaited<ReturnType<typeof updateCredit>>,
+  TError,
+  { creditId: number; data: BodyType<UpdateCreditRequest> },
+  TContext
+> => {
+  return useMutation(getUpdateCreditMutationOptions(options));
 };
 
 /**

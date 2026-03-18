@@ -51,6 +51,20 @@ export interface AddCreditRequest {
   type: AddCreditRequestType;
 }
 
+export type UpdateCreditRequestType =
+  (typeof UpdateCreditRequestType)[keyof typeof UpdateCreditRequestType];
+
+export const UpdateCreditRequestType = {
+  earned: "earned",
+  used: "used",
+} as const;
+
+export interface UpdateCreditRequest {
+  amount?: number;
+  reason?: string;
+  type?: UpdateCreditRequestType;
+}
+
 export interface ErrorResponse {
   error: string;
 }
