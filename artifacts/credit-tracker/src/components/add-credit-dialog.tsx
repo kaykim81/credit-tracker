@@ -118,14 +118,11 @@ export function AddCreditDialog({ personId, personName, trigger }: AddCreditDial
             <div className="space-y-2">
               <Label htmlFor="amount" className="text-foreground/80 font-medium">Amount</Label>
               <div className="relative">
-                <span className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground font-display font-medium">
-                  #
-                </span>
                 <Input
                   id="amount"
                   type="number"
                   placeholder="0"
-                  className="pl-8 text-lg py-6 rounded-xl border-border/80 focus-visible:ring-primary/20"
+                  className="text-lg py-6 rounded-xl border-border/80 focus-visible:ring-primary/20"
                   {...form.register("amount")}
                 />
               </div>
