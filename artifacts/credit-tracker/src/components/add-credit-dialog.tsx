@@ -40,7 +40,7 @@ export function AddCreditDialog({ personId, personName, trigger }: AddCreditDial
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      amount: undefined,
+      amount: 1,
       reason: "",
       type: AddCreditRequestType.earned,
     },
