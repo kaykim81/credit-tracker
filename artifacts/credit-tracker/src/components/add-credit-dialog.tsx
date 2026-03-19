@@ -114,6 +114,32 @@ export function AddCreditDialog({ personId, personName, trigger }: AddCreditDial
             </button>
           </div>
 
+          {selectedType === "earned" && (
+            <div className="space-y-2">
+              <Label className="text-foreground/80 font-medium">Quick Select</Label>
+              <div className="flex flex-wrap gap-2">
+                {["Wake up early", "Bible", "Korean", "Khan", "Basketball", "Meal prep", "Chores", "Sleep help", "Sleep alone"].map((preset) => {
+                  const isSelected = form.watch("reason") === preset;
+                  return (
+                    <button
+                      key={preset}
+                      type="button"
+                      onClick={() => form.setValue("reason", isSelected ? "" : preset, { shouldValidate: true })}
+                      className={cn(
+                        "px-3 py-1.5 rounded-full text-sm font-medium border transition-all duration-150",
+                        isSelected
+                          ? "bg-success text-white border-success shadow-sm"
+                          : "bg-secondary text-muted-foreground border-transparent hover:border-success/40 hover:text-success hover:bg-success/5"
+                      )}
+                    >
+                      {preset}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          )}
+
           <div className="space-y-4">
             <div className="space-y-2">
               <Label htmlFor="amount" className="text-foreground/80 font-medium">Amount</Label>
