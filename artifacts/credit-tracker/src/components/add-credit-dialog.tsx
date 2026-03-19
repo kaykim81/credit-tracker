@@ -204,7 +204,7 @@ export function AddCreditDialog({ personId, personName, trigger }: AddCreditDial
               <Label htmlFor="reason" className="text-foreground/80 font-medium">Reason</Label>
               <Input
                 id="reason"
-                placeholder="e.g. Paid for dinner"
+                placeholder=""
                 className="py-6 rounded-xl border-border/80 focus-visible:ring-primary/20"
                 {...form.register("reason")}
               />
