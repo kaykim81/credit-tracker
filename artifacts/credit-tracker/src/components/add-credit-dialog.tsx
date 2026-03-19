@@ -99,7 +99,7 @@ export function AddCreditDialog({ personId, personName, trigger }: AddCreditDial
             </button>
             <button
               type="button"
-              onClick={() => { form.setValue("type", AddCreditRequestType.used); form.setValue("amount", 1); form.setValue("reason", ""); }}
+              onClick={() => { form.setValue("type", AddCreditRequestType.used); form.setValue("amount", "" as any); form.setValue("reason", ""); }}
               className={cn(
                 "flex flex-col items-center justify-center p-4 rounded-xl border-2 transition-all duration-200",
                 selectedType === "used"
