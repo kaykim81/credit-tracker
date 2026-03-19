@@ -140,6 +140,49 @@ export function AddCreditDialog({ personId, personName, trigger }: AddCreditDial
             </div>
           )}
 
+          {selectedType === "used" && (
+            <div className="space-y-2">
+              <Label className="text-foreground/80 font-medium">Quick Select</Label>
+              <div className="flex flex-wrap gap-2">
+                {[
+                  { label: "30m", amount: 2 },
+                  { label: "60m", amount: 4 },
+                  { label: "90m", amount: 6 },
+                  { label: "120m", amount: 10 },
+                  { label: "25c", amount: 1 },
+                  { label: "50c", amount: 2 },
+                  { label: "75c", amount: 3 },
+                  { label: "100c", amount: 4 },
+                ].map((preset) => {
+                  const isSelected = form.watch("reason") === preset.label;
+                  return (
+                    <button
+                      key={preset.label}
+                      type="button"
+                      onClick={() => {
+                        if (isSelected) {
+                          form.setValue("reason", "", { shouldValidate: true });
+                          form.setValue("amount", 1, { shouldValidate: true });
+                        } else {
+                          form.setValue("reason", preset.label, { shouldValidate: true });
+                          form.setValue("amount", preset.amount, { shouldValidate: true });
+                        }
+                      }}
+                      className={cn(
+                        "px-3 py-1.5 rounded-full text-sm font-medium border transition-all duration-150",
+                        isSelected
+                          ? "bg-rose-500 text-white border-rose-500 shadow-sm"
+                          : "bg-secondary text-muted-foreground border-transparent hover:border-rose-400/40 hover:text-rose-600 hover:bg-rose-500/5"
+                      )}
+                    >
+                      {preset.label}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          )}
+
           <div className="space-y-4">
             <div className="space-y-2">
               <Label htmlFor="amount" className="text-foreground/80 font-medium">Amount</Label>
