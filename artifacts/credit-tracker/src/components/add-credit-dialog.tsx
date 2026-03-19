@@ -84,7 +84,7 @@ export function AddCreditDialog({ personId, personName, trigger }: AddCreditDial
           <div className="grid grid-cols-2 gap-3">
             <button
               type="button"
-              onClick={() => form.setValue("type", AddCreditRequestType.earned)}
+              onClick={() => { form.setValue("type", AddCreditRequestType.earned); form.setValue("amount", 1); form.setValue("reason", ""); }}
               className={cn(
                 "flex flex-col items-center justify-center p-4 rounded-xl border-2 transition-all duration-200",
                 selectedType === "earned"
@@ -99,7 +99,7 @@ export function AddCreditDialog({ personId, personName, trigger }: AddCreditDial
             </button>
             <button
               type="button"
-              onClick={() => form.setValue("type", AddCreditRequestType.used)}
+              onClick={() => { form.setValue("type", AddCreditRequestType.used); form.setValue("amount", 1); form.setValue("reason", ""); }}
               className={cn(
                 "flex flex-col items-center justify-center p-4 rounded-xl border-2 transition-all duration-200",
                 selectedType === "used"
