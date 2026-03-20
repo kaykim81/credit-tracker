@@ -153,6 +153,7 @@ export function AddCreditDialog({ personId, personName, trigger }: AddCreditDial
                   { label: "50c", amount: 2 },
                   { label: "75c", amount: 3 },
                   { label: "100c", amount: 4 },
+                  { label: "Penalty", amount: 1 },
                 ].map((preset) => {
                   const isSelected = form.watch("reason") === preset.label;
                   return (
