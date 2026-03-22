@@ -148,7 +148,7 @@ export function AddCreditDialog({ personId, personName, trigger }: AddCreditDial
                   { label: "30m", amount: 2 },
                   { label: "60m", amount: 4 },
                   { label: "90m", amount: 6 },
-                  { label: "120m", amount: 10 },
+                  { label: "120m", amount: 8 },
                   { label: "25c", amount: 1 },
                   { label: "50c", amount: 2 },
                   { label: "75c", amount: 3 },
