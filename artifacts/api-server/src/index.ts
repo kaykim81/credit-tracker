@@ -1,19 +1,24 @@
+import path from "path";
+import express from "express";
 import app from "./app";
 import { seedPersons } from "./seed";
 
-const rawPort = process.env["PORT"];
-
-if (!rawPort) {
-  throw new Error(
-    "PORT environment variable is required but was not provided.",
-  );
-}
-
+const rawPort = process.env["PORT"] || "3000";
 const port = Number(rawPort);
 
-if (Number.isNaN(port) || port <= 0) {
-  throw new Error(`Invalid PORT value: "${rawPort}"`);
-}
+// --- SERVE FRONTEND ---
+// This points to the 'dist' folder created by 'pnpm -r run build'
+const frontendPath = path.resolve(__dirname, "../../frontend/dist");
+
+app.use(express.static(frontendPath));
+
+// Support for Single Page App (SPA) routing
+app.get("*", (req, res, next) => {
+  // If the request starts with /api, let the router handle it
+  if (req.path.startsWith('/api')) return next();
+  res.sendFile(path.join(frontendPath, "index.html"));
+});
+// ----------------------
 
 seedPersons().then(() => {
   app.listen(port, () => {
