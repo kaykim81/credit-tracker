@@ -8,4 +8,5 @@ RUN pnpm install
 RUN PORT=3000 BASE_PATH=/ pnpm -r --filter "./artifacts/**" run build -- --no-typecheck
 
 EXPOSE 3000
-CMD ["pnpm", "start"]
+# Tells pnpm to run the start script specifically for the credit-tracker app
+CMD ["pnpm", "--filter", "@workspace/api-server", "start"]
