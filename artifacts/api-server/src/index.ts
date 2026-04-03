@@ -3,32 +3,27 @@ import express from "express";
 import app from "./app";
 import { seedPersons } from "./seed";
 
-// Default to 3000 if the environment variable is missing
-const port = process.env.PORT ? Number(process.env.PORT) : 3000;
+// Use 3000 as a hard fallback if PORT is missing
+const port = process.env.PORT ? parseInt(process.env.PORT, 10) : 3000;
 
-// Resolve the path to the frontend dist folder
-// In your Docker structure, it is two levels up from the server dist
-const frontendPath = path.resolve(__dirname, "../../frontend/dist");
+// Force the path to be absolute within the Docker container
+const frontendPath = path.join(__dirname, "../../frontend/dist");
 
-// Static File Serving
+// Static serving for the UI
 app.use(express.static(frontendPath));
 
-// API routes are handled in app.ts, everything else goes to index.html
+// Route all non-API requests to the index.html for SPA support
 app.get("*", (req, res, next) => {
   if (req.path.startsWith("/api")) return next();
-  res.sendFile(path.join(frontendPath, "index.html"), (err) => {
-    if (err) {
-      res.status(404).send("Frontend build not found. Ensure pnpm -r run build was successful.");
-    }
-  });
+  res.sendFile(path.join(frontendPath, "index.html"));
 });
 
 seedPersons().then(() => {
   app.listen(port, "0.0.0.0", () => {
-    console.log(`🚀 Server active on port ${port}`);
-    console.log(`📂 Serving frontend from: ${frontendPath}`);
+    console.log(`✅ Server live at http://0.0.0.0:${port}`);
+    console.log(`📂 Frontend served from: ${frontendPath}`);
   });
 }).catch((err) => {
-  console.error("❌ Database Seed Failed:", err);
+  console.error("❌ Critical: Database seeding or startup failed", err);
   process.exit(1);
 });
