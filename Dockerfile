@@ -4,9 +4,13 @@ WORKDIR /app
 COPY . .
 RUN pnpm install
 
-# Provide both PORT and BASE_PATH to satisfy the Vite config
-# Added --no-typecheck to ensure the build completes smoothly on the VPS
-RUN PORT=3000 BASE_PATH=/ pnpm -r --filter "./artifacts/**" run build -- --no-typecheck
+# Set these as ARGs and ENVs to ensure they exist at build AND run time
+ARG PORT=3000
+ARG BASE_PATH=/
+ENV PORT=$PORT
+ENV BASE_PATH=$BASE_PATH
+
+RUN pnpm -r --filter "./artifacts/**" run build -- --no-typecheck
 
 EXPOSE 3000
 CMD ["node", "artifacts/api-server/dist/index.cjs"]
