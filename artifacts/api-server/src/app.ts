@@ -22,7 +22,7 @@ console.log("Does it exist?", fs.existsSync(frontendDistPath));
 console.log("------------------------------------------");
 
 app.use(express.static(frontendDistPath));
-app.use("/api", router);
+//app.use("/api", router);
 
 // Use the Express 5 compatible catch-all
 app.get("(.*)", (req, res) => {
