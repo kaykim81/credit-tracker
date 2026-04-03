@@ -1,26 +1,31 @@
 import express, { type Express } from "express";
+import cors from "cors";
 import path from "path";
 import fs from "fs";
+import router from "./routes";
 
 const app: Express = express();
 
-// 1. NO CORS, NO JSON, NO ROUTER - Just the basics to start
-const frontendDistPath = path.resolve(process.cwd(), "artifacts/credit-tracker/dist/public");
+app.use(cors());
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
-// 2. Logging
-console.log("CRITICAL DEBUG: Starting Minimal App");
-console.log("Target Path:", frontendDistPath);
+// 1. Path to your UI files
+const frontendPath = path.resolve(process.cwd(), "artifacts/credit-tracker/dist/public");
 
-// 3. Simple static serving
-app.use(express.static(frontendDistPath));
+// 2. Serve static files FIRST
+app.use(express.static(frontendPath));
 
-// 4. Simplest possible catch-all (No regex, just a function)
-app.use((req, res, next) => {
-  const indexPath = path.join(frontendDistPath, "index.html");
+// 3. API Routes SECOND
+app.use("/api", router);
+
+// 4. Catch-all LAST (Using the (.*) syntax for Node 24)
+app.get("(.*)", (req, res) => {
+  const indexPath = path.join(frontendPath, "index.html");
   if (fs.existsSync(indexPath)) {
     res.sendFile(indexPath);
   } else {
-    res.status(404).send("File Not Found");
+    res.status(404).send("UI files not found in container.");
   }
 });
 
