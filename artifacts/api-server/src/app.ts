@@ -25,12 +25,13 @@ app.use(express.static(frontendDistPath));
 app.use("/api", router);
 
 // 4. Catch-all for SPA routing
-app.get("*", (req, res) => {
+// To this (Express 5 compatible):
+app.get("(.*)", (req, res) => {
   const indexPath = path.join(frontendDistPath, "index.html");
   if (fs.existsSync(indexPath)) {
     res.sendFile(indexPath);
   } else {
-    res.status(404).send("Frontend index.html not found. Check server logs.");
+    res.status(404).send("Frontend index.html not found.");
   }
 });
 
