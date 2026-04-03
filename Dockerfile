@@ -4,9 +4,9 @@ WORKDIR /app
 COPY . .
 RUN pnpm install
 
-# We provide a default PORT here just for the build step
-# We also use --no-typecheck to skip those 'queryKey' errors for now
-RUN PORT=3000 pnpm build --filter "./artifacts/**" --if-present -- --no-typecheck
+# We bypass the root 'pnpm build' and run build only on the sub-folders
+# This avoids triggering the 'pnpm typecheck' script at the root level
+RUN PORT=3000 pnpm -r --filter "./artifacts/**" run build -- --no-typecheck
 
 EXPOSE 3000
 CMD ["pnpm", "start"]
