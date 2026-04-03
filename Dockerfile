@@ -1,16 +1,18 @@
 FROM node:24-slim
 RUN npm install -g pnpm
 WORKDIR /app
+
+# Set default envs so Vite/Node don't crash
+ENV PORT=3000
+ENV BASE_PATH=/
+ENV NODE_ENV=production
+
 COPY . .
 RUN pnpm install
 
-# Set these as ARGs and ENVs to ensure they exist at build AND run time
-ARG PORT=3000
-ARG BASE_PATH=/
-ENV PORT=$PORT
-ENV BASE_PATH=$BASE_PATH
-
-RUN pnpm -r --filter "./artifacts/**" run build -- --no-typecheck
+# Build everything
+RUN pnpm -r run build
 
 EXPOSE 3000
+# Run the server directly
 CMD ["node", "artifacts/api-server/dist/index.cjs"]
