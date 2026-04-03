@@ -29,11 +29,26 @@ app.get("*", (req, res, next) => {
   }
 });
 
-seedPersons().then(() => {
-  app.listen(port, "0.0.0.0", () => {
-    console.log(`✅ Server live at http://0.0.0.0:${port}`);
+seedPersons()
+  .then(() => {
+    const server = app.listen(port, "0.0.0.0", () => {
+      console.log(`✅ Server live at http://0.0.0.0:${port}`);
+    });
+
+    // Handle server-level errors (like EADDRINUSE)
+    server.on('error', (e) => {
+      console.error("❌ Server Error:", e);
+      process.exit(1);
+    });
+  })
+  .catch((err) => {
+    console.error("❌ DATABASE CONNECTION FAILED:");
+    console.error(err); // This will tell us the exact Postgres error
+    process.exit(1);
   });
-}).catch((err) => {
-  console.error("❌ Critical: Database seeding or startup failed", err);
+
+// Handle any hidden promise rejections
+process.on('unhandledRejection', (reason, promise) => {
+  console.error('❌ Unhandled Rejection at:', promise, 'reason:', reason);
   process.exit(1);
 });
