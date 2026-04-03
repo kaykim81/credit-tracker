@@ -11,8 +11,9 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // 1. Resolve the path and log it for debugging
-const frontendDistPath = path.resolve(__dirname, "../../credit-tracker/dist/public");
-console.log("Checking frontend path:", frontendDistPath);
+// Replace your path definition with this:
+const frontendDistPath = path.resolve(process.cwd(), "../../artifacts/credit-tracker/dist/public");
+console.log("Serving frontend from:", frontendDistPath);
 
 // 2. Safety Check: If the folder doesn't exist, log a warning instead of crashing later
 if (!fs.existsSync(frontendDistPath)) {
