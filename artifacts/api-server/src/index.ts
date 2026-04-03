@@ -3,28 +3,32 @@ import express from "express";
 import app from "./app";
 import { seedPersons } from "./seed";
 
-const rawPort = process.env["PORT"] || "3000";
-const port = Number(rawPort);
+// Default to 3000 if the environment variable is missing
+const port = process.env.PORT ? Number(process.env.PORT) : 3000;
 
-// --- SERVE FRONTEND ---
-// This points to the 'dist' folder created by 'pnpm -r run build'
+// Resolve the path to the frontend dist folder
+// In your Docker structure, it is two levels up from the server dist
 const frontendPath = path.resolve(__dirname, "../../frontend/dist");
 
+// Static File Serving
 app.use(express.static(frontendPath));
 
-// Support for Single Page App (SPA) routing
+// API routes are handled in app.ts, everything else goes to index.html
 app.get("*", (req, res, next) => {
-  // If the request starts with /api, let the router handle it
-  if (req.path.startsWith('/api')) return next();
-  res.sendFile(path.join(frontendPath, "index.html"));
+  if (req.path.startsWith("/api")) return next();
+  res.sendFile(path.join(frontendPath, "index.html"), (err) => {
+    if (err) {
+      res.status(404).send("Frontend build not found. Ensure pnpm -r run build was successful.");
+    }
+  });
 });
-// ----------------------
 
 seedPersons().then(() => {
-  app.listen(port, () => {
-    console.log(`Server listening on port ${port}`);
+  app.listen(port, "0.0.0.0", () => {
+    console.log(`🚀 Server active on port ${port}`);
+    console.log(`📂 Serving frontend from: ${frontendPath}`);
   });
 }).catch((err) => {
-  console.error("Failed to seed database:", err);
+  console.error("❌ Database Seed Failed:", err);
   process.exit(1);
 });
