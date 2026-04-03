@@ -4,9 +4,9 @@ WORKDIR /app
 COPY . .
 RUN pnpm install
 
-# Build EVERYTHING (Frontend + Backend)
-RUN pnpm -r run build
+# Provide a default PORT so Vite doesn't crash during build
+# We filter for only the artifacts we need to speed things up
+RUN PORT=3000 pnpm -r --filter "./artifacts/**" run build
 
 EXPOSE 3000
-# Run the compiled server
 CMD ["node", "artifacts/api-server/dist/index.cjs"]
