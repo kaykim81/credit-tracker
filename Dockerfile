@@ -13,4 +13,5 @@ EXPOSE 3000
 
 # 3. Use the DIRECTORY path for the filter instead of the name
 # This is often more reliable in Docker environments
-CMD ["pnpm", "--filter", "./artifacts/api-server", "start"]
+# Run the compiled javascript directly with Node
+CMD ["node", "artifacts/api-server/dist/index.cjs"]
