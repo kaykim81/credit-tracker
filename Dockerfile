@@ -4,9 +4,8 @@ WORKDIR /app
 COPY . .
 RUN pnpm install
 
-# We bypass the root 'pnpm build' and run build only on the sub-folders
-# This avoids triggering the 'pnpm typecheck' script at the root level
-RUN PORT=3000 pnpm -r --filter "./artifacts/**" run build -- --no-typecheck
+# We provide both PORT and BASE_PATH to satisfy the strict Vite config
+RUN PORT=3000 BASE_PATH=/ pnpm -r --filter "./artifacts/**" run build -- --no-typecheck
 
 EXPOSE 3000
 CMD ["pnpm", "start"]
