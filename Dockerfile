@@ -1,12 +1,16 @@
 FROM node:24-slim
 RUN npm install -g pnpm
 WORKDIR /app
-COPY . .
-RUN pnpm install
 
-# Provide build-time variables to satisfy Vite
-RUN PORT=3000 BASE_PATH=/ pnpm -r --filter "./artifacts/**" run build -- --no-typecheck
+# 1. Copy everything while preserving structure
+COPY . .
+
+# 2. Install and Build
+RUN pnpm install
+RUN PORT=3000 BASE_PATH=/ pnpm --filter "@workspace/api-server" run build -- --no-typecheck
 
 EXPOSE 3000
-# Target the specific workspace name from your package.json
-CMD ["pnpm", "--filter", "@workspace/api-server", "start"]
+
+# 3. Use the DIRECTORY path for the filter instead of the name
+# This is often more reliable in Docker environments
+CMD ["pnpm", "--filter", "./artifacts/api-server", "start"]
