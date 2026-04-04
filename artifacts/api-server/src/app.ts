@@ -11,12 +11,11 @@ app.use(express.urlencoded({ extended: true }));
 
 app.use("/api", router);
 
-// Serve frontend static files
-const frontendDist = path.join(__dirname, "../../../artifacts/credit-tracker/dist/public");
+const frontendDist = path.join(process.cwd(), "artifacts/credit-tracker/dist/public");
 app.use(express.static(frontendDist));
 
-// SPA catch-all — serve index.html for any non-API route
-app.get("*", (_req, res) => {
+// Express 5 wildcard syntax
+app.get("/{*path}", (_req, res) => {
   res.sendFile(path.join(frontendDist, "index.html"));
 });
 
