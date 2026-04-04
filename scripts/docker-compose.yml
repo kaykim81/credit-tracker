@@ -1,0 +1,52 @@
+services:
+  app:
+    container_name: credit-tracker-app
+    image: credit-tracker-app:latest
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: always
+    environment:
+      - PORT=3000
+      - DATABASE_URL=postgresql://postgres:${MY_DB_PASSWORD}@db:5432/credit_db
+      - MY_DOMAIN=${MY_DOMAIN}
+      - BASE_PATH=/
+      - NODE_ENV=production
+      - CI=true
+    networks:
+      - root_default
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.credit-tracker.rule=Host(`${MY_DOMAIN}`)"
+      - "traefik.http.routers.credit-tracker.entrypoints=websecure"
+      - "traefik.http.routers.credit-tracker.tls=true"
+      - "traefik.http.routers.credit-tracker.tls.certresolver=mytlschallenge"
+      - "traefik.http.services.credit-tracker.loadbalancer.server.port=3000"
+    depends_on:
+      db:
+        condition: service_healthy
+
+  db:
+    container_name: credit-tracker-db
+    image: postgres:16
+    restart: always
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=${MY_DB_PASSWORD}
+      - POSTGRES_DB=credit_db
+    volumes:
+      - credit_tracker_data:/var/lib/postgresql/data
+    networks:
+      - root_default
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d credit_db"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  credit_tracker_data:
+
+networks:
+  root_default:
+    external: true
